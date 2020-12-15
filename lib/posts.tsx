@@ -23,7 +23,7 @@ export function getSortedPostsData() {
     // Combine the data with the id
     return {
       id,
-      ...matterResult.data
+      ...(matterResult.data as { date: string; title: string })
     }
   })
   // Sort posts by date
@@ -38,20 +38,6 @@ export function getSortedPostsData() {
 
 export function getAllPostIds() {
   const fileNames = fs.readdirSync(postsDirectory)
-
-  // Returns an array that looks like this:
-  // [
-  //   {
-  //     params: {
-  //       id: 'ssg-ssr'
-  //     }
-  //   },
-  //   {
-  //     params: {
-  //       id: 'pre-rendering'
-  //     }
-  //   }
-  // ]
   return fileNames.map(fileName => {
     return {
       params: {
@@ -61,7 +47,7 @@ export function getAllPostIds() {
   })
 }
 
-export async function getPostData(id) {
+export async function getPostData(id: string) {
   const fullPath = path.join(postsDirectory, `${id}.md`)
   const fileContents = fs.readFileSync(fullPath, 'utf8')
 
@@ -78,41 +64,6 @@ export async function getPostData(id) {
   return {
     id,
     contentHtml,
-    ...matterResult.data
+    ...(matterResult.data as { date: string; title: string })
   }
 }
-
-// export async function getSortedPostsData() {
-//   // Instead of the file system,
-//   // fetch post data from an external API endpoint
-//   const res = await fetch('..')
-//   return res.json()
-// }
-
-// import someDatabaseSDK from 'someDatabaseSDK'
-
-// const databaseClient = someDatabaseSDK.createClient(...)
-
-// export async function getSortedPostsData() {
-//   // Instead of the file system,
-//   // fetch post data from a database
-//   return databaseClient.query('SELECT posts...')
-// }
-
-// export async function getServerSideProps(context) {
-//   return {
-//     props: {
-//       // props for your component
-//     }
-//   }
-// }
-
-// import useSWR from 'swr'
-
-// function Profile() {
-//   const { data, error } = useSWR('/api/user', fetch)
-
-//   if (error) return <div>failed to load</div>
-//   if (!data) return <div>loading...</div>
-//   return <div>hello {data.name}!</div>
-// }
